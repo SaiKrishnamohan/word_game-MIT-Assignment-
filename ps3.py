@@ -299,7 +299,7 @@ def play_hand(hand, word_list):
     
     while calculate_handlen(hand)>0:
        print('Current hand:',display_hand(hand))
-       word=input('Please enter a word or "!!" to indicate you are done:')
+       word=input('Please enter a word or "!!" to indicate you are done:').lower()
        if word=='!!':
            flag=True
            break
@@ -319,7 +319,7 @@ def play_hand(hand, word_list):
         print('Ran out of letters.')
         print('Total score for this hand:',total,'points')
     print('----------------------------------------------------------------')   
-    return (total,flag)
+    return total
     # BEGIN PSEUDOCODE <-- Remove this comment when you implement this function
     # Keep track of the total score
     
@@ -448,6 +448,9 @@ def play_game(word_list):
     no_of_hands=int(input('Enter total number of hands:'))
     total_score=0
     replay=True
+    flag=False
+    flag1=False
+    flag2=False
     
     
     for play in range(no_of_hands):
@@ -455,22 +458,41 @@ def play_game(word_list):
        hand=deal_hand(HAND_SIZE)
        
        print('Current hand:',display_hand(hand))
-       ip=input('Would you like to substitute a letter? ')
+       ip=input('Would you like to substitute a letter? ').lower()
        
     
-       if ip == 'yes':
-          letterip=input('Which letter would you like to replace:')
+       if ip == 'yes' :
+          letterip=input('Which letter would you like to replace:').lower()
           hand=substitute_hand(hand,letterip)  
-       
+       elif ip not in ['yes','no']:
+           flag2=True
+           while flag2:
+                print('You have entered an invalid argument!')
+                ip=input('you are requested to enter either "yes" or "no":').lower()
+                flag2=False
+                if ip not in ['yes','no']:
+                    flag2=True
+                if not flag2 and ip=='yes':
+                    letterip=input('Which letter would you like to replace:').lower()
+                    hand=substitute_hand(hand,letterip)
        while replay:
-           (score,flag)=play_hand(hand, word_list)
+           if not flag1:
+               score=play_hand(hand, word_list)
            total_score=total_score+score
+           flag1=False
           
-           rep=input('Would you like to replay the hand? ')
-           if rep=='no' and flag:
+           rep=input('Would you like to replay the hand? ').lower()
+           if rep=='no':
                replay=False
-           elif rep=='yes' and flag:
+           elif rep=='yes':
                replay=True
+           else:
+               flag=True
+               if flag:
+                   print('You have entered a invalid argument!')
+                   replay=True
+                   flag1=True
+               flag=False
         
     print('Total score overall hands:',total_score)    
        
